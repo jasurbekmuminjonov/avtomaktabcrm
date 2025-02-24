@@ -1,0 +1,244 @@
+@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;800;900&display=swap);
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: "Poppins", sans-serif;
+}
+body {
+  display: flex;
+  justify-content: center;
+}
+:root {
+  --brand: #2da254;
+  --bg: #ffffff;
+  --text: #011502;
+}
+.wrapper {
+  background-color: var(--bg);
+  max-width: 1920px;
+  width: 100vw;
+  min-height: 100svh;
+  height: 100svh;
+  display: flex;
+}
+body::-webkit-scrollbar,
+div::-webkit-scrollbar {
+  display: none;
+}
+button,
+input,
+select,
+textarea,
+a {
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.page {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.page_header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-inline: 12px;
+  justify-content: space-between;
+}
+.page_header > b {
+  font-size: 24px;
+  color: var(--text);
+  font-weight: normal;
+}
+.modal_form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.modal_form > input,
+.modal_form > select {
+  width: 100%;
+  height: 35px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  padding-inline: 6px;
+}
+.modal_form > button {
+  width: 100%;
+  height: 35px;
+  border-radius: 6px;
+  background-color: var(--brand);
+  color: #fff;
+  font-size: 16px;
+}
+.phone_input > input {
+  height: 35px;
+  padding-inline: 6px;
+  border-radius: 0 6px 6px 0;
+  border: 1px solid #ccc;
+  border-left: none;
+}
+.phone_input > span {
+  border: 1px solid #ccc;
+  height: 35px;
+  border-right: none;
+  display: flex;
+  border-radius: 6px 0 0 6px;
+
+  align-items: center;
+  padding-inline-start: 6px;
+}
+.header_actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.header_actions > select {
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #2da254;
+
+}
+.header_actions > input {
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #2da254;
+}
+.header_actions > button {
+  background-color: var(--brand);
+  color: #fff;
+  border: none;
+  padding: 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.modal_form > input:focus,
+.modal_form > select:focus {
+  border-color: var(--brand);
+}
+.table_actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.get_btn {
+  width: 40px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #2ebf64;
+}
+.edit_btn {
+  width: 40px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #ffb704;
+}
+.delete_btn {
+  width: 40px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #ff4979;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table > thead {
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+}
+
+.table > thead > tr > :where(th, td) {
+  border: 1px solid #ccc;
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.table > thead > tr > * {
+  text-align: center;
+  /* width: 60px; */
+}
+
+.table > tbody > tr > :where(th, td) {
+  max-width: 200px;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  font-size: 14px;
+  color: #666;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  background-color: #fff;
+}
+
+.table > tbody > tr > :where(th, td) figure {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.table > tbody > tr > :where(th, td) figure img {
+  width: 80px;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+}
+
+.table > tbody > tr > * {
+  text-align: center;
+}
+
+.table > tbody > tr:hover {
+  background: #f9f9f9;
+  cursor: pointer;
+}
+.table > tbody > tr > td > button {
+  margin: 0 6px;
+  width: 30px;
+  height: 30px;
+  background-color: #2ebf64;
+  color: #fff;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+}
+td > * {
+  margin: 0 5px;
+}
