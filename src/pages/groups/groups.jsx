@@ -105,7 +105,7 @@ const Groups = () => {
                 const subject = subjects?.find(subject => subject._id === record.subject_id);
                 const totalPayment = subject ? subject?.price * record.students.length : 0;
                 const percentage = totalPayment > 0 ? (paidPayment / totalPayment) * 100 : 0;
-                return <p style={{ background: `${percentage < 50 ? "#ff4979" : percentage < 80 ? "#ffb704" : "#2da254"}`, paddingInline: "2px", paddingBlock: "2px", width: "50px", color: "#fff", alignItems: "center", display: "flex", justifyContent: "center" }}>{percentage.parseInt(2).toLocaleString() + "%"}</p>;
+                return <p style={{ background: `${percentage < 50 ? "#ff4979" : percentage < 80 ? "#ffb704" : "#2da254"}`, paddingInline: "2px", paddingBlock: "2px", width: "50px", color: "#fff", alignItems: "center", display: "flex", justifyContent: "center" }}>{percentage?.parseInt(2)?.toLocaleString() + "%"}</p>;
             }
         },
         {
