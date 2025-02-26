@@ -12,6 +12,8 @@ import Payments from '../pages/payment/payment';
 import Statistics from '../pages/statistics/statistics';
 import Cashiers from '../pages/cashiers/cashiers';
 import PaymentLog from '../pages/payment/paymentLog';
+import Spending from '../pages/spendings/Spendings';
+import { GiExpense } from 'react-icons/gi';
 const Layout = () => {
     const location = useLocation()
     const user = JSON.parse(localStorage.getItem("user")) || {}
@@ -55,13 +57,18 @@ const Layout = () => {
                     {
                         user.role !== "teacher" && (
                             <>
-                                <Link className={location.pathname === "/payment" && "active"} to="/payment">
-                                    <MdOutlinePayment />
-                                    <p>To'lov</p>
-                                </Link>
+
                                 {user.role !== "cashier" && (
 
                                     <>
+                                        <Link className={location.pathname === "/payment" && "active"} to="/payment">
+                                            <MdOutlinePayment />
+                                            <p>To'lovlar</p>
+                                        </Link>
+                                        <Link className={location.pathname === "/expenses" && "active"} to="/expenses">
+                                            <GiExpense />
+                                            <p>Harajatlar</p>
+                                        </Link>
                                         <Link className={location.pathname === "/subjects" && "active"} to="/subjects">
                                             <FaBook />
                                             <p>Bosqichlar</p>
@@ -114,12 +121,12 @@ const Layout = () => {
                                                 <Route path='/subjects' element={<Subjects />} />
                                                 <Route path='/teachers' element={<Teachers />} />
                                                 <Route path='/cashiers' element={<Cashiers />} />
-                                                <Route path='/payment/log' element={<PaymentLog />} />
+                                                <Route path='/expenses' element={<Spending />} />
+                                                <Route path='/payment' element={<PaymentLog />} />
                                             </>
                                         )
                                     }
                                     <Route path='/students' element={<Students />} />
-                                    <Route path='/payment' element={<Payments />} />
                                 </>
                             )
                         }

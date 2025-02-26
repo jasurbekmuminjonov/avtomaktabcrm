@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useGetPaymentQuery } from '../../context/services/payment.service';
-import { useGetTeacherQuery } from '../../context/services/teacher.service';
 import { useGetStudentQuery } from '../../context/services/students.service';
 import { useGetGroupQuery } from '../../context/services/group.service';
 import './style.css';
 import moment from "moment";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useGetSubjectQuery } from '../../context/services/subject.service';
+import { useGetSpendingQuery } from '../../context/services/spending.service';
 
 const Statistics = () => {
     const { data: payments = [] } = useGetPaymentQuery();
-    const { data: teachers = [] } = useGetTeacherQuery();
+    const { data: spendings = [] } = useGetSpendingQuery();
     const { data: students = [] } = useGetStudentQuery();
     const { data: groups = [] } = useGetGroupQuery();
     const { data: subjects = [] } = useGetSubjectQuery();
@@ -103,6 +103,10 @@ const Statistics = () => {
                 <div className="card">
                     <b>{payments.reduce((a, b) => a + b.amount, 0).toLocaleString()}</b>
                     <p>Jami to'lovlar</p>
+                </div>
+                <div className="card">
+                    <b>{(payments.reduce((a, b) => a + b.amount, 0) - spendings.reduce((a, b) => a + b.amount, 0)).toLocaleString()}</b>
+                    <p>Sof daromad</p>
                 </div>
             </div>
             <p style={{ fontSize: "22px" }}>Oxirgi 30 kunlik to'lovlar</p>

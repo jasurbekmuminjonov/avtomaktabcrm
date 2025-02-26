@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { FaList, FaPlus } from 'react-icons/fa';
+import { FaDollarSign, FaList, FaPlus } from 'react-icons/fa';
 import { useCreateGroupMutation, useDeleteGroupMutation, useGetGroupQuery, useUpdateGroupMutation } from '../../context/services/group.service';
 import { useForm } from 'react-hook-form';
 import TableComponent from '../../components/table/table';
 import { MdDeleteForever, MdEdit } from 'react-icons/md';
-import { Modal, Popconfirm } from 'antd';
+import { Popover, message, Modal, Popconfirm } from 'antd';
 import { useGetTeacherQuery } from '../../context/services/teacher.service';
 import { useGetSubjectQuery } from '../../context/services/subject.service';
-import { useGetPaymentQuery } from '../../context/services/payment.service';
+import { useCreatePaymentMutation, useGetPaymentQuery } from '../../context/services/payment.service';
 import { useGetStudentQuery } from '../../context/services/students.service';
 import { FiMinus } from 'react-icons/fi';
+import moment from 'moment';
 
 const Groups = () => {
     const { data: groups = [] } = useGetGroupQuery();
@@ -17,7 +18,35 @@ const Groups = () => {
     const { data: subjects = [] } = useGetSubjectQuery();
     const { data: students = [] } = useGetStudentQuery();
     const { data: payments = [] } = useGetPaymentQuery();
+    const [listStudent, setListStudent] = useState("")
     const user = JSON.parse(localStorage.getItem('user'));
+    const [createPayment] = useCreatePaymentMutation()
+    const {
+        register: paymentRegister,
+        handleSubmit: paymentSubmit,
+        reset: paymentReset,
+        formState: { errors: paymentErrors }
+    } = useForm();
+
+    const content = (
+        <table className="table">
+            <thead>
+                <tr>
+                    <td>Summa</td>
+                    <td>Sana</td>
+                </tr>
+            </thead>
+            <tbody>
+                {payments.filter(payment => payment.student_id === listStudent).map((payment) => (
+                    <tr key={payment._id}>
+                        <td>{payment.amount.toLocaleString()} so'm</td>
+                        <td>{moment(payment.createdAt).format("DD.MM.YYYY HH:mm")}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    )
+
     const [createGroup] = useCreateGroupMutation()
     const [updateGroup] = useUpdateGroupMutation()
     const [deleteGroup] = useDeleteGroupMutation()
@@ -29,9 +58,11 @@ const Groups = () => {
     const [filteredGroups, setFilteredGroups] = useState([])
     const [searchText, setSearchText] = useState("")
     const [selectedSubject, setSelectedSubject] = useState("")
+    const [selectedStudent, setSelectedStudent] = useState("")
+    const [paymentOpen, setPaymentOpen] = useState(false)
 
     useEffect(() => {
-        setFilteredGroups(groups.filter(g => g.status === "active" && g?.subject_id === selectedSubject || g.group_number.toString().toLowerCase().includes(searchText.toLowerCase()) || g.group_name.toString().toLowerCase().includes(searchText.toLowerCase())))
+        setFilteredGroups(groups.filter(g => g.status === "active").filter(g => selectedSubject ? g.subject_id === selectedSubject : true).filter(g => g.group_number.toLowerCase().includes(searchText.toLowerCase()) || g.group_name.toLowerCase().includes(searchText.toLowerCase())))
     }, [groups, searchText, selectedSubject])
     function handleCreateGroup(data) {
         data.group_number = data.group_number.toString();
@@ -45,7 +76,6 @@ const Groups = () => {
             setOpen(false)
         }
     }
-
     const statusIcons = {
         "active": "",
         "inactive": "‼️"
@@ -157,19 +187,51 @@ const Groups = () => {
         }
 
     ]
-
     function getStudent(id) {
         return students?.find(student => student._id === id) || {};
     }
+    async function recordPayment(data) {
+        let response;
+        data.amount = Number(data.amount)
+        data.student_id = selectedStudent;
+        data.group_id = groups?.find(g => g.students.includes(selectedStudent))._id;
+        response = await createPayment(data)
+        if (response.error) {
+            console.log(response.error.data);
+            message.error(response.error.data?.message || "To'lovni qayd qilishda xatolik");
+            return;
+        }
+        message.success("To'lov qayd etildi");
+        setPaymentOpen(false);
+        setSelectedStudent("")
+        paymentReset({ amount: null })
+    }
     return (
         <div className='page'>
-            <Modal footer={[]} open={listOpen} title="Guruh ma'lumotlari" onCancel={() => { setListGroup([]); setListOpen(false) }}>
+            <Modal open={paymentOpen} footer={[]} title="To'lovni qayd qilish" onCancel={() => {
+                setPaymentOpen(false);
+                paymentReset({ amount: null });
+                setSelectedStudent("");
+            }}>
+                <form onSubmit={paymentSubmit(recordPayment)} className="modal_form">
+                    <input {...paymentRegister("amount", { required: "To'lov summasini kiriting" })} type="number" placeholder="To'lov summasi" />
+                    {paymentErrors.amount && <p style={{ color: 'red', textDecoration: "none" }}>{paymentErrors.amount.message}</p>}
+                    <button type="submit">Qayd qilish</button>
+                </form>
+            </Modal>
+            <Modal width={800} footer={[]} open={listOpen} title="Guruh ma'lumotlari" onCancel={() => { setListGroup([]); setListOpen(false) }}>
                 <table className="table">
                     <thead>
                         <tr>
                             <td>O'quvchi ismi</td>
                             <td>Qilingan to'lov</td>
                             <td>Qolgan to'lov</td>
+                            <td>To'lovlar</td>
+                            {
+                                user.role !== "teacher" && (
+                                    <td>To'lov qilish</td>
+                                )
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -192,6 +254,22 @@ const Groups = () => {
                                             return (subject?.price - totalPayment).toLocaleString() + " so'm"
                                         })()}
                                     </td>
+                                    <td>
+                                        <Popover placement='bottom' content={content} title="Qilingan to'lovlar">
+                                            <button onMouseEnter={() => setListStudent(student)}>
+                                                <FaList />
+                                            </button>
+                                        </Popover>
+                                    </td>
+                                    {
+                                        user.role !== "teacher" && (
+                                            <td>
+                                                <button onClick={() => { setSelectedStudent(student); setPaymentOpen(true) }}>
+                                                    <FaDollarSign />
+                                                </button>
+                                            </td>
+                                        )
+                                    }
                                 </tr>
                             ))
                         }
@@ -225,7 +303,6 @@ const Groups = () => {
                         ))}
                     </select>
                     {errors.subject_id && <p style={{ color: 'red', textDecoration: "none" }}>{errors.subject_id.message}</p>}
-
                     <button
                         type="submit"
                     >

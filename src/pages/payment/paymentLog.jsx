@@ -6,12 +6,15 @@ import moment from 'moment';
 import { MdDeleteForever, MdEdit } from 'react-icons/md';
 import { Popconfirm, Modal, Input } from 'antd';
 import { useForm } from 'react-hook-form';
-import { FaChevronLeft } from 'react-icons/fa';
+import { FaChevronLeft, FaPrint } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { useGetGroupQuery } from '../../context/services/group.service';
 const PaymentLog = () => {
     const { data: payments = [] } = useGetPaymentQuery();
     const { data: students = [] } = useGetStudentQuery();
+    const { data: groups = [] } = useGetGroupQuery();
     const [updatePayment] = useUpdatePaymentMutation();
     const [deletePayment] = useDeletePaymentMutation();
     const navigate = useNavigate();
@@ -72,11 +75,47 @@ const PaymentLog = () => {
         }
     ];
 
+    const printFile = () => {
+        const doc = new jsPDF();
+        const today = moment().format("DD.MM.YYYY");
+
+        // Bugungi to‘lovlarni olish va vaqt bo‘yicha tartiblash
+        const todayPayments = payments
+            .filter(p => moment(p.createdAt).format("DD.MM.YYYY") === today)
+            .sort((a, b) => moment(a.createdAt).valueOf() - moment(b.createdAt).valueOf());
+
+        const headers = ["O'quvchi", "Guruhi", "Summa", "Vaqti"];
+        let startY = 20;
+        let page = 1;
+
+        const rows = todayPayments.map(p => [
+            students.find(s => s._id === p.student_id)?.name || "Noma'lum",
+            groups.find(g => g._id === p.group_id)?.group_number + groups.find(g => g._id === p.group_id)?.group_name || "Noma'lum",
+            p.amount.toLocaleString(),
+            moment(p.createdAt).format("DD.MM.YYYY HH:mm")
+        ]);
+
+        doc.text(`${moment().format("DD.MM.YYYY")} Sahifa: ${page}`, 14, 10);
+        autoTable(doc, {
+            startY,
+            head: [headers],
+            body: rows,
+        });
+
+        const blob = doc.output("blob");
+        const url = URL.createObjectURL(blob);
+        window.open(url, "_blank").print();
+    };
+
+
     return (
         <div className='page'>
             <div className="page_header">
                 <b>Barcha to'lovlar</b>
                 <div className="header_actions">
+                    <button onClick={() => printFile()}>
+                        <FaPrint />
+                    </button>
                     <input
                         type='search'
                         placeholder="O'quvchi ismi bo'yicha qidiring"

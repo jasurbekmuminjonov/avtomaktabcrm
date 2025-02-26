@@ -74,12 +74,20 @@ input[type="number"] {
   gap: 6px;
 }
 .modal_form > input,
-.modal_form > select {
+.modal_form > select,
+.modal_form > textarea {
   width: 100%;
   height: 35px;
   border-radius: 6px;
   border: 1px solid #ccc;
   padding-inline: 6px;
+  resize: vertical;
+}
+.modal_form > textarea {
+  height: 100px;
+}
+textarea::-webkit-scrollbar {
+  display: none;
 }
 .modal_form > button {
   width: 100%;
@@ -115,7 +123,6 @@ input[type="number"] {
   padding: 6px;
   border-radius: 4px;
   border: 1px solid #2da254;
-
 }
 .header_actions > input {
   padding: 6px;
@@ -127,9 +134,12 @@ input[type="number"] {
   color: #fff;
   border: none;
   padding: 6px;
+  min-height: 35px;
+  min-width: 35px;
   border-radius: 4px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
 }
 .modal_form > input:focus,
@@ -230,14 +240,26 @@ input[type="number"] {
   cursor: pointer;
 }
 .table > tbody > tr > td > button {
-  margin: 0 6px;
-  width: 30px;
+  /* margin: 0 6px; */
+  width: 50px;
   height: 30px;
   background-color: #2ebf64;
   color: #fff;
   border: none;
   outline: none;
   border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+}
+.table > tbody > tr > td > input {
+  width: 100px;
+  height: 30px;
+  display: flex;
+  border-radius: 8px;
+  padding-inline: 4px;
+  border: 1px solid #ccc;
 }
 td > * {
   margin: 0 5px;
