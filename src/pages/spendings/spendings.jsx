@@ -26,7 +26,6 @@ const Spendings = () => {
     }
 
     const columns = [
-        { title: "Sarlavha", dataIndex: "title", key: "title" },
         { title: "Tavsif", dataIndex: "description", key: "description" },
         { title: "Summa", dataIndex: "amount", key: "amount", render: (text) => text.toLocaleString() },
         {
@@ -39,8 +38,6 @@ const Spendings = () => {
         <div className='page'>
             <Modal open={open} onCancel={() => { setOpen(false) }} footer={[]} title={"Harajat qo'shish"}>
                 <form autoComplete='off' onSubmit={handleSubmit(handleCreateCashier)} className="modal_form">
-                    <input {...register("title", { required: "Harajat sarlavhasini kiriting" })} type="text" placeholder="Harajat sarlavhasi" />
-                    {errors.title && <p style={{ color: 'red', textDecoration: "none" }}>{errors.title.message}</p>}
                     <textarea {...register("description", { required: "Harajat tavsifini kiriting" })} type="text" placeholder="Harajat tavsifi" />
                     {errors.description && <p style={{ color: 'red', textDecoration: "none" }}>{errors.description.message}</p>}
                     <input
