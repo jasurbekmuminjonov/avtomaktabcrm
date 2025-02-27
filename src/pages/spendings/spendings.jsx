@@ -6,7 +6,7 @@ import { message, Modal } from 'antd';
 import { useCreateSpendingMutation, useGetSpendingQuery } from '../../context/services/spending.service';
 import moment from 'moment';
 
-const Spending = () => {
+const Spendings = () => {
     const { data: spendings = [] } = useGetSpendingQuery();
     const [createSpending] = useCreateSpendingMutation()
     const { reset, handleSubmit, register, formState: { errors } } = useForm()
@@ -74,4 +74,4 @@ const Spending = () => {
 };
 
 
-export default Spending;
+export default Spendings;

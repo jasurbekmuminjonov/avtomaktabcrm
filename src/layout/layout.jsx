@@ -12,8 +12,8 @@ import Payments from '../pages/payment/payment';
 import Statistics from '../pages/statistics/statistics';
 import Cashiers from '../pages/cashiers/cashiers';
 import PaymentLog from '../pages/payment/paymentLog';
-import Spending from '../pages/spendings/Spendings';
 import { GiExpense } from 'react-icons/gi';
+import Spendings from '../pages/spendings/spendings';
 const Layout = () => {
     const location = useLocation()
     const user = JSON.parse(localStorage.getItem("user")) || {}
@@ -121,7 +121,7 @@ const Layout = () => {
                                                 <Route path='/subjects' element={<Subjects />} />
                                                 <Route path='/teachers' element={<Teachers />} />
                                                 <Route path='/cashiers' element={<Cashiers />} />
-                                                <Route path='/expenses' element={<Spending />} />
+                                                <Route path='/expenses' element={<Spendings />} />
                                                 <Route path='/payment' element={<PaymentLog />} />
                                             </>
                                         )
