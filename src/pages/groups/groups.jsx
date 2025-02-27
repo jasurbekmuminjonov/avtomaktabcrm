@@ -203,6 +203,8 @@ const Groups = () => {
         }
         message.success("To'lov qayd etildi");
         setPaymentOpen(false);
+        setListOpen(false);
+        setListGroup([])
         setSelectedStudent("")
         paymentReset({ amount: null })
     }
