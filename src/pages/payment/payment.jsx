@@ -27,12 +27,12 @@ const Payment = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        setFilteredStudents(students.filter(g => g.status === "active" && g.group_id === selectedGroup || g.name.toString().toLowerCase().includes(searchText.toLowerCase())))
+        setFilteredStudents(students.filter(g => g.status === "active" && g?.group_id === selectedGroup || g.name.toString().toLowerCase().includes(searchText.toLowerCase())))
     }, [groups, searchText, selectedGroup])
 
     const columns = [
         { title: "O'quvchi ismi", dataIndex: "name", key: "name" },
-        { title: "Guruhi", render: (_, record) => groups?.find(t => t._id === record.group_id)?.group_number + groups?.find(t => t._id === record.group_id)?.group_name },
+        { title: "Guruhi", render: (_, record) => groups?.find(t => t._id === record?.group_id)?.group_number + groups?.find(t => t._id === record?.group_id)?.group_name },
         {
             title: "To'lagan summa", render: (_, record) => {
                 const groupPayments = payments.filter(payment => payment.student_id === record._id)
@@ -92,7 +92,6 @@ const Payment = () => {
         setSelectedStudent("")
         reset({ amount: null })
     }
-    console.log(role === "admin");
 
     return (
         <div className='page'>

@@ -14,6 +14,7 @@ import Cashiers from '../pages/cashiers/cashiers';
 import PaymentLog from '../pages/payment/paymentLog';
 import { GiExpense } from 'react-icons/gi';
 import Spendings from '../pages/spendings/spendings';
+import StudentsWithoutGroup from '../pages/students/studentsWithoutGroup';
 const Layout = () => {
     const location = useLocation()
     const user = JSON.parse(localStorage.getItem("user")) || {}
@@ -37,6 +38,10 @@ const Layout = () => {
                                 <Link className={location.pathname === "/students" && "active"} to="/students">
                                     <PiStudentBold />
                                     <p>O'quvchilar</p>
+                                </Link>
+                                <Link className={location.pathname === "/guruhsizoquvchilar" && "active"} to="/guruhsizoquvchilar">
+                                    <PiStudentBold />
+                                    <p style={{ fontSize: "13px" }}>Guruhsiz o'quvchilar</p>
                                 </Link>
                             </>
                         )
@@ -128,6 +133,7 @@ const Layout = () => {
                                         )
                                     }
                                     <Route path='/students' element={<Students />} />
+                                    <Route path='/guruhsizoquvchilar' element={<StudentsWithoutGroup />} />
                                 </>
                             )
                         }

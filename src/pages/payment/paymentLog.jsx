@@ -97,7 +97,7 @@ const PaymentLog = () => {
 
         const rows = todayPayments.map(p => [
             students.find(s => s._id === p.student_id)?.name || "Noma'lum",
-            groups.find(g => g._id === p.group_id)?.group_number + groups.find(g => g._id === p.group_id)?.group_name || "Noma'lum",
+            groups.find(g => g._id === p?.group_id)?.group_number + groups.find(g => g._id === p?.group_id)?.group_name || "Noma'lum",
             p.amount.toLocaleString(),
             moment(p.createdAt).format("DD.MM.YYYY HH:mm")
         ]);

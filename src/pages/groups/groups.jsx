@@ -201,7 +201,6 @@ const Groups = () => {
         let response;
         data.amount = Number(data.amount)
         data.student_id = selectedStudent;
-        data.group_id = groups?.find(g => g.students.includes(selectedStudent))._id;
         response = await createPayment(data)
         if (response.error) {
             console.log(response.error.data);

@@ -6,10 +6,11 @@ import TableComponent from '../../components/table/table';
 import { MdDeleteForever, MdEdit } from 'react-icons/md';
 import { message, Modal, Popconfirm } from 'antd';
 import { useGetGroupQuery } from '../../context/services/group.service';
-import { useGetPaymentQuery } from '../../context/services/payment.service';
+import { useCreatePaymentMutation, useGetPaymentQuery } from '../../context/services/payment.service';
 import { useGetSubjectQuery } from '../../context/services/subject.service';
+import { FaDollarSign } from 'react-icons/fa6';
 
-const Students = () => {
+const StudentsWithoutGroup = () => {
     const { data: students = [] } = useGetStudentQuery();
     const { data: groups = [] } = useGetGroupQuery();
     const { data: payments = [] } = useGetPaymentQuery();
@@ -17,7 +18,16 @@ const Students = () => {
     const [createStudent] = useCreateStudentMutation()
     const [updateStudent] = useUpdateStudentMutation()
     const [deleteStudent] = useDeleteStudentMutation()
+    const [createPayment] = useCreatePaymentMutation()
+    const [selectedStudent, setSelectedStudent] = useState("")
+    const {
+        register: paymentRegister,
+        handleSubmit: paymentSubmit,
+        reset: paymentReset,
+        formState: { errors: paymentErrors }
+    } = useForm();
     const [open, setOpen] = useState(false)
+    const [paymentOpen, setPaymentOpen] = useState(false)
     const [editingStudent, setEditingStudent] = useState("")
     const { reset, handleSubmit, register, formState: { errors } } = useForm()
 
@@ -40,6 +50,23 @@ const Students = () => {
         }
     }
 
+    async function recordPayment(data) {
+        let response;
+
+        data.amount = Number(data.amount)
+        data.student_id = selectedStudent;
+        response = await createPayment(data)
+        if (response.error) {
+            console.log(response.error.data);
+            message.error(response.error.data?.message || "To'lovni qayd qilishda xatolik");
+            return;
+        }
+        message.success("To'lov qayd etildi");
+        setOpen(false);
+        setSelectedStudent("")
+        reset({ amount: null })
+    }
+
     const columns = [
         {
             title: "№",
@@ -49,26 +76,23 @@ const Students = () => {
         { title: "O'quvchi ismi", dataIndex: "name", key: "name" },
         { title: "Telefon raqami", dataIndex: "phone", key: "phone" },
         {
-            title: "Guruh", render: (_, record) => {
-                const group = groups.find(g => g._id === record.group_id);
-                return group?.group_number + "-" + group?.group_name;
-            }
-        },
-        {
-            title: "Bosqich", render: (_, record) => {
-                const group = groups.find(g => g._id === record.group_id);
-                const subject = subjects.find(s => s._id === group.subject_id);
-                return subject?.name;
-            }
-        },
-        {
             title: "Amallar",
             render: (_, record) => (
                 <div className='table_actions'>
                     <button
                         onClick={() => {
+                            setSelectedStudent(record._id);
+                            reset({ amount: null });
+                            setPaymentOpen(true);
+                        }}
+                        className='edit_btn'
+                    >
+                        <FaDollarSign />
+                    </button>
+                    <button
+                        onClick={() => {
                             setEditingStudent(record._id);
-                            reset({ name: record?.name, phone: record?.phone, group_id: record.group_id });
+                            reset({ name: record?.name, phone: record?.phone });
                             setOpen(true);
                         }}
                         className='edit_btn'
@@ -91,6 +115,7 @@ const Students = () => {
                             <MdDeleteForever />
                         </button>
                     </Popconfirm>
+
                 </div>
             ),
             key: "actions"
@@ -99,6 +124,22 @@ const Students = () => {
     ]
     return (
         <div className='page'>
+            <Modal open={paymentOpen} footer={[]} title="To'lovni qayd qilish" onCancel={() => {
+                setPaymentOpen(false);
+                paymentReset({ amount: null });
+                setSelectedStudent("");
+            }}>
+                <form onSubmit={paymentSubmit(recordPayment)} className="modal_form">
+                    <input {...paymentRegister("amount", { required: "To'lov summasini kiriting" })} type="number" placeholder="To'lov summasi" />
+                    {paymentErrors.amount && <p style={{ color: 'red', textDecoration: "none" }}>{paymentErrors.amount.message}</p>}
+                    <select {...paymentRegister("payment_method", { required: true })}>
+                        <option value="cash">Naqd</option>
+                        <option value="card">Karta</option>
+                        <option value="transfer">Bank</option>
+                    </select>
+                    <button type="submit">Qayd qilish</button>
+                </form>
+            </Modal>
             <Modal open={open} onCancel={() => { setOpen(false); setEditingStudent("") }} footer={[]} title={editingStudent ? "O'quvchini tahrirlash" : "O'quvchi qo'shish"}>
                 <form autoComplete='off' onSubmit={handleSubmit(handleCreateStudent)} className="modal_form">
                     <input {...register("name", { required: "O'quvchi ismini kiriting" })} type="text" placeholder="O'quvchi ismi" />
@@ -112,21 +153,22 @@ const Students = () => {
                             placeholder="Telefon raqam"
                         />
                     </div>
+                    {editingStudent && (
+                        <select {...register("group_id")}>
+                            <option value="">Guruhi</option>
+                            {groups.filter(group => group.status === "active").map(group => (
+                                <option value={group._id} disabled={editingStudent && group._id === students?.find(gr => gr._id === editingStudent)?.group_id}>{group.group_number + "-" + group.group_name + " " + subjects.find(subject => subject._id === group.subject_id)?.name}</option>
+                            ))}
+                        </select>
+                    )}
                     {errors.phone && <p style={{ color: 'red', textDecoration: "none" }}>{errors.phone.message}</p>}
-                    <select {...register("group_id", { required: "Guruhni tanlang" })}>
-                        <option value="">Guruhi</option>
-                        {groups.filter(group => group.status === "active").map(group => (
-                            <option value={group._id} disabled={editingStudent && group._id === students?.find(gr => gr._id === editingStudent)?.group_id}>{group.group_number + "-" + group.group_name + " " + subjects.find(subject => subject._id === group.subject_id)?.name}</option>
-                        ))}
-                    </select>
-                    {errors.group_id && <p style={{ color: 'red', textDecoration: "none" }}>{errors.group_id.message}</p>}
                     <button type="submit">{editingStudent ? "Tahrirlash" : "Qo'shish"}</button>
                 </form>
             </Modal>
             <div className="page_header">
-                <b>O'quvchilar</b>
+                <b>Guruhsiz o'quvchilar</b>
                 <div className="header_actions">
-                    <button onClick={() => { reset({ name: "", phone: "", group_id: "" }); setOpen(true) }}>
+                    <button onClick={() => { reset({ name: "", phone: "" }); setOpen(true) }}>
                         <FaPlus />
                         O'quvchi qo'shish
                     </button>
@@ -134,11 +176,11 @@ const Students = () => {
             </div>
             <TableComponent
                 columns={columns}
-                data={students.filter(student => student.status === "active" && student.group_id)}
+                data={students.filter(student => student.status === "active" && !student.group_id)}
             />
         </div>
     );
 };
 
 
-export default Students;
+export default StudentsWithoutGroup;
