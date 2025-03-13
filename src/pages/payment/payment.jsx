@@ -102,6 +102,7 @@ const Payment = () => {
                         <tr>
                             <td>№</td>
                             <td>To'lov summasi</td>
+                            <td>To'lov usuli</td>
                             <td>To'lov qilingan sanasi</td>
                         </tr>
                     </thead>
@@ -111,6 +112,7 @@ const Payment = () => {
                                 <tr key={index}>
                                     <td>{index + 1}</td>
                                     <td>{payment.amount.toLocaleString()} so'm</td>
+                                    <td>{payment.payment_method === "cash" ? "Naqd" : payment.payment_method === "card" ? 'Karta' : "Bank"}</td>
                                     <td>{moment(payment.createdAt).format("DD.MM.YYYY HH:mm")}</td>
                                 </tr>
                             ))

@@ -27,12 +27,17 @@ const Groups = () => {
         reset: paymentReset,
         formState: { errors: paymentErrors }
     } = useForm();
-
+    const methods = {
+        cash: 'Naqd',
+        card: 'Karta',
+        transfer: 'Bank'
+    }
     const content = (
         <table className="table">
             <thead>
                 <tr>
                     <td>Summa</td>
+                    <td>Usul</td>
                     <td>Sana</td>
                 </tr>
             </thead>
@@ -40,6 +45,7 @@ const Groups = () => {
                 {payments.filter(payment => payment.student_id === listStudent).map((payment) => (
                     <tr key={payment._id}>
                         <td>{payment.amount.toLocaleString()} so'm</td>
+                        <td>{methods[payment.payment_method]}</td>
                         <td>{moment(payment.createdAt).format("DD.MM.YYYY HH:mm")}</td>
                     </tr>
                 ))}
@@ -170,6 +176,7 @@ const Groups = () => {
                                     okText="O'chirish"
                                     cancelText="Orqaga"
                                     overlayStyle={{
+
                                         width: "300px"
                                     }}
                                 >
@@ -218,6 +225,11 @@ const Groups = () => {
                 <form onSubmit={paymentSubmit(recordPayment)} className="modal_form">
                     <input {...paymentRegister("amount", { required: "To'lov summasini kiriting" })} type="number" placeholder="To'lov summasi" />
                     {paymentErrors.amount && <p style={{ color: 'red', textDecoration: "none" }}>{paymentErrors.amount.message}</p>}
+                    <select {...paymentRegister("payment_method", { required: true })}>
+                        <option value="cash">Naqd</option>
+                        <option value="card">Karta</option>
+                        <option value="transfer">Bank</option>
+                    </select>
                     <button type="submit">Qayd qilish</button>
                 </form>
             </Modal>

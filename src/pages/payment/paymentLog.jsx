@@ -26,12 +26,13 @@ const PaymentLog = () => {
     const handleEdit = (payment) => {
         setSelectedPayment(payment);
         setValue("amount", payment.amount);
+        setValue("payment_method", payment.payment_method);
         setIsModalOpen(true);
     };
 
     const handleUpdate = (data) => {
         if (selectedPayment) {
-            updatePayment({ id: selectedPayment._id, body: { amount: Number(data.amount) } });
+            updatePayment({ id: selectedPayment._id, body: { amount: Number(data.amount), payment_method: data.payment_method } });
             setIsModalOpen(false);
         }
     };
@@ -40,6 +41,12 @@ const PaymentLog = () => {
         const student = students.find(s => String(s._id) === String(payment.student_id));
         return student && student.name.toLowerCase().includes(searchTerm.toLowerCase());
     });
+
+    const methods = {
+        cash: 'Naqd',
+        card: 'Karta',
+        transfer: 'Bank'
+    }
 
     const columns = [
         {
@@ -51,6 +58,7 @@ const PaymentLog = () => {
             }
         },
         { title: "To'lov summasi", dataIndex: "amount", render: (text) => text.toLocaleString() },
+        { title: "To'lov usuli", dataIndex: 'payment_method', key: 'payment_method', render: (text) => methods[text] },
         { title: "To'lov sanasi", dataIndex: "createdAt", render: (text) => moment(text).format("DD.MM.YYYY HH:mm") },
         {
             title: "Amallar", render: (_, record) => (
@@ -79,7 +87,6 @@ const PaymentLog = () => {
         const doc = new jsPDF();
         const today = moment().format("DD.MM.YYYY");
 
-        // Bugungi to‘lovlarni olish va vaqt bo‘yicha tartiblash
         const todayPayments = payments
             .filter(p => moment(p.createdAt).format("DD.MM.YYYY") === today)
             .sort((a, b) => moment(a.createdAt).valueOf() - moment(b.createdAt).valueOf());
@@ -138,6 +145,11 @@ const PaymentLog = () => {
                 <form className="modal_form" onSubmit={handleSubmit(handleUpdate)}>
                     <label>To'lov summasi</label>
                     <input type="number" {...register("amount", { required: true, min: 0 })} />
+                    <select {...register("payment_method", { required: true })}>
+                        <option value="cash">Naqd</option>
+                        <option value="card">Karta</option>
+                        <option value="transfer">Bank</option>
+                    </select>
                     <button type="submit">Tahrirlash</button>
                 </form>
             </Modal>
