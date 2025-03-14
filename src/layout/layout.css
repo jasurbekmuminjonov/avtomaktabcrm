@@ -93,7 +93,7 @@ header > button {
 .signature {
   color: #fff;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 10px;
   display: flex;
   gap: 4px;
   margin-bottom: 6px;
@@ -101,5 +101,5 @@ header > button {
 .signature > a {
   color: #fff;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 10px;
 }

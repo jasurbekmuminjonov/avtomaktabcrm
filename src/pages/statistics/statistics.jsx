@@ -93,19 +93,23 @@ const Statistics = () => {
         <div className='page' style={{ alignItems: "center", paddingInline: "none" }}>
             <div className="cards">
                 <div className="card">
-                    <b>{totalDebt.toLocaleString()}</b>
+                    <b>{totalDebt?.toLocaleString()}</b>
                     <p>Jami qarzlar</p>
                 </div>
                 <div className="card">
-                    <b>{students.length}</b>
+                    <b>{spendings?.reduce((a, b) => a + b.amount, 0).toLocaleString()}</b>
+                    <p>Jami harajatlar</p>
+                </div>
+                <div className="card">
+                    <b>{students?.length} ta</b>
                     <p>Jami o'quvchilar</p>
                 </div>
                 <div className="card">
-                    <b>{payments.reduce((a, b) => a + b.amount, 0).toLocaleString()}</b>
+                    <b>{payments?.reduce((a, b) => a + b.amount, 0).toLocaleString()}</b>
                     <p>Jami to'lovlar</p>
                 </div>
                 <div className="card">
-                    <b>{(payments.reduce((a, b) => a + b.amount, 0) - spendings.reduce((a, b) => a + b.amount, 0)).toLocaleString()}</b>
+                    <b>{(payments?.reduce((a, b) => a + b.amount, 0) - spendings.reduce((a, b) => a + b.amount, 0)).toLocaleString()}</b>
                     <p>Sof daromad</p>
                 </div>
             </div>

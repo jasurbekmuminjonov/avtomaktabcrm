@@ -98,7 +98,7 @@ const Layout = () => {
                     <span>
                         Developer:
                     </span>
-                    <a target='_blank' href="https://t.me/jasurbek_fullstack">@jasurbek_fullstack</a>
+                    <a target='_blank' href="https://t.me/jasurbek_muminjonov">@jasurbek_muminjonov</a>
                 </div>
             </aside>
             <main>
