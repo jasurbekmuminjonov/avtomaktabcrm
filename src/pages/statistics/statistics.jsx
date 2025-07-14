@@ -8,6 +8,7 @@ import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useGetSubjectQuery } from "../../context/services/subject.service";
 import { useGetSpendingQuery } from "../../context/services/spending.service";
 import { DatePicker, Button, Modal, Table } from "antd";
+import Students from "../students/students";
 const { RangePicker } = DatePicker;
 
 const Statistics = () => {
@@ -406,7 +407,7 @@ const Statistics = () => {
         />
       </Modal>
 
-      <p style={{ fontSize: "22px" }}>Oxirgi 30 kunlik to'lovlar</p>
+      {/* <p style={{ fontSize: "22px" }}>Oxirgi 30 kunlik to'lovlar</p>
       <ResponsiveContainer
         style={{ border: "1px solid #2da254" }}
         width={"95%"}
@@ -427,7 +428,8 @@ const Statistics = () => {
             dot={false}
           />
         </LineChart>
-      </ResponsiveContainer>
+      </ResponsiveContainer> */}
+      <Students />
     </div>
   );
 };
