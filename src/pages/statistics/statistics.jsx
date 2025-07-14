@@ -62,7 +62,7 @@ const Statistics = () => {
 
     groups.forEach((group) => {
       const subject = subjects.find(
-        (subject) => subject._id.toString() === group.subject_id.toString()
+        (subject) => subject._id.toString() === group?.subject_id.toString()
       );
       if (!subject) return;
 

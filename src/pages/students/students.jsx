@@ -86,7 +86,7 @@ const Students = () => {
       title: "Bosqich",
       render: (_, record) => {
         const group = groups.find((g) => g._id === record.group_id);
-        const subject = subjects.find((s) => s._id === group.subject_id);
+        const subject = subjects.find((s) => s._id === group?.subject_id);
         return subject?.name;
       },
     },
@@ -200,7 +200,7 @@ const Students = () => {
                     "-" +
                     group.group_name +
                     " " +
-                    subjects.find((subject) => subject._id === group.subject_id)
+                    subjects.find((subject) => subject._id === group?.subject_id)
                       ?.name}
                 </option>
               ))}
